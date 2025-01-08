@@ -1,43 +1,70 @@
-# Design Plan: Price Estimator Tool
+# Price Estimator Tool Design Plan
 
-## Overview
-This tool estimates the fair price and boost price for products on marketplaces.
+## MODULE 1: INPUT COLLECTION
+- Accept user inputs:
+    - Product Category
+    - Product Condition
+    - Original Price
+    - Product Age (in years/months)
+    - Optional: Listing URL
 
-## User Workflow
-1. User inputs product details.
-2. Tool validates inputs.
-3. Fair price and boost price are calculated.
-4. Results are displayed to the user.
+## MODULE 2: DATA VALIDATION
+- Validate inputs:
+    - Ensure no field is empty.
+    - Check Original Price is a valid number.
+    - Ensure Age is within realistic bounds (e.g., > 0).
+    - Validate URL format if provided.
 
-## Input-Output Details
-### Inputs
-- **Product Category** (e.g., Furniture, Electronics)
-- **Condition**: New or Used
-- **Original Price**: $ value
-- **Product Age**: Time since purchase
+## MODULE 3: MARKET DATA RETRIEVAL
+- IF Category provided:
+    - Fetch market data for similar products from:
+        - Facebook Marketplace
+        - eBay
+        - OLX
+    - Extract data points:
+        - Product name
+        - Condition
+        - Average price
+        - Supply-demand trends
 
-### Outputs
-- **Estimated Fair Price**
-- **Boost Price**
+## MODULE 4: FAIR PRICE CALCULATION
+- Calculate Depreciation Rate based on:
+    - Product Category (e.g., Electronics = 20%, Furniture = 10% per year).
+- Apply formula:
+    Fair Price = Original Price × (1 - Depreciation Rate × Age) × Market Adjustment Factor
+- Validate Fair Price:
+    - Ensure it’s within realistic market bounds (e.g., not negative).
 
-## Core Logic
-### Price Estimation
-- Formula: `Fair Price = Original Price × (1 - Depreciation × Age)`
-- Depreciation rates by category:
-  - Furniture: 15% per year
-  - Electronics: 20% per year
+## MODULE 5: BOOST PRICE CALCULATION
+- Define Boost Percentage based on:
+    - Product Category
+    - Demand trends
+- Apply formula:
+    Boost Price = Fair Price × Boost Percentage
 
-### Boost Price Calculation
-- Formula: `Boost Price = Fair Price × 5%`
+## MODULE 6: LISTING URL ANALYSIS (Optional)
+- IF URL provided:
+    - Extract:
+        - Product Category
+        - Listing Price
+    - Compare Listing Price to Fair Price:
+        Difference = (Listing Price - Fair Price) / Fair Price × 100
+    - IF Difference > Threshold (e.g., 20%):
+        - Apply penalty multiplier to Boost Price:
+            Adjusted Boost Price = Boost Price × Penalty Multiplier
+    - ELSE:
+        - Recommend Boost Price as is.
 
-## Data Handling
-- Static data for categories and depreciation rates.
+## MODULE 7: OUTPUT RESULTS
+- Display results to the user:
+    - Fair Price
+    - Recommended Boost Price
+    - Optional Feedback:
+        - "Listing Price is higher than the estimated fair price. Adjust accordingly."
 
-## Technology Stack
-- Frontend: HTML, CSS, JavaScript
-- Backend: Python Flask
-- Data: CSV file for initial category rates
+## MODULE 8: FUTURE INTEGRATION (Optional)
+- Plan for:
+    - Automated market data retrieval via APIs.
+    - Enhanced UI for dynamic user interactions.
+    - Integration with payment systems for boosting services.
 
-## Future Enhancements
-- Automated marketplace data fetching.
-- Feedback for price adjustment based on trends.
